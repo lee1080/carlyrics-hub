@@ -1228,33 +1228,102 @@
 
         /* AI 编写新源专区 (AI Hub) */
         .ai-hub-card {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(20, 26, 45, 0.8) 100%);
-            border: 1px solid rgba(168, 85, 247, 0.3);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(20, 26, 45, 0.85) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.35);
             border-radius: var(--radius-xl);
             padding: 32px;
             margin-bottom: 40px;
-            box-shadow: var(--shadow-card);
+            box-shadow: 0 8px 32px rgba(168, 85, 247, 0.15);
         }
 
-        .ai-hub-body {
+        .ai-features-grid {
             display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 20px 0 24px;
+        }
+
+        .ai-feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            transition: all 0.25s ease;
+        }
+
+        .ai-feature-item:hover {
+            border-color: rgba(168, 85, 247, 0.5);
+            background: rgba(168, 85, 247, 0.06);
+            transform: translateY(-2px);
+        }
+
+        .ai-feature-item h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+            display: flex;
             align-items: center;
+            gap: 8px;
+        }
+
+        .ai-feature-item p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        .ai-table-wrap {
+            overflow-x: auto;
+            margin: 16px 0 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-match-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            text-align: left;
+        }
+
+        .ai-match-table th {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 10px 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            white-space: nowrap;
+        }
+
+        .ai-match-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .ai-match-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .ai-match-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
         }
 
         .prompt-preview-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(168, 85, 247, 0.25);
             border-radius: var(--radius-md);
             padding: 16px;
             font-family: var(--font-mono);
             font-size: 0.78rem;
-            color: #c084fc;
-            max-height: 180px;
+            color: #d8b4fe;
+            max-height: 240px;
             overflow-y: auto;
             white-space: pre-wrap;
             margin-bottom: 12px;
+            line-height: 1.5;
         }
 
         /* 常见问题 FAQ */
@@ -1872,32 +1941,179 @@
 
         <!-- AI 编写歌词源助手 -->
         <section class="ai-hub-card" id="ai-hub">
-            <div class="ai-hub-body">
-                <div>
-                    <span class="hero-badge highlight" style="margin-bottom: 12px; display: inline-block;">🤖 开发者与极客专区</span>
-                    <h2 style="font-size: 1.45rem; font-weight: 800; color: #fff; margin-bottom: 8px;">让 AI (ChatGPT / DeepSeek) 帮写歌词源</h2>
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
-                        CarLyrics 拥有完善的插件沙箱规范。只需抓取任意音乐平台的 API 数据，将提示词直接发送给 AI，即可瞬间生成可用的 <code>.js</code> 歌词源文件！
-                    </p>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="nav-btn" style="background: var(--accent-purple); color: #fff;" onclick="copyAiPrompt()">
-                            📋 一键复制 AI 写源提示词
-                        </button>
-                        <a href="docs/LYRICS_SOURCE_SPEC.md" target="_blank" class="action-btn">
-                            📖 查看歌词源开发手册
-                        </a>
+            <div>
+                <span class="hero-badge highlight" style="margin-bottom: 12px; display: inline-block;">🤖 AI 歌词源生态 · 专属 Skill & Prompt</span>
+                <h2 style="font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 8px;">
+                    让 AI (Claude / ChatGPT / DeepSeek) 帮写歌词源插件
+                </h2>
+                <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; max-width: 900px;">
+                    CarLyrics 2.0+ 拥有轻量纯净的 JavaScript 沙箱规范与<strong>渠道智能溯源</strong>架构。只需抓取任意音乐平台的网络 API（cURL 或 JSON 数据），使用我们的官方 Antigravity Skill 或复制标准 Prompt，AI 即可秒级编写出完全契合规范、支持逐字动效的高可用生产级 <code>.js</code> 插件！
+                </p>
+
+                <!-- 特性亮点 -->
+                <div class="ai-features-grid">
+                    <div class="ai-feature-item">
+                        <h4>🎯 播放器智能溯源匹配</h4>
+                        <p>遵循平台命名特征，车机播放 QQ、网易、酷我、酷狗、汽水等 App 时，自动将匹配源置顶为第一顺位。</p>
+                    </div>
+                    <div class="ai-feature-item">
+                        <h4>🎤 原生逐字卡拉OK动效</h4>
+                        <p>原生支持网易云 YRC 逐字高亮动效与毫秒级 LRC 时间轴，配合车载 HUD 渲染丝滑流光。</p>
+                    </div>
+                    <div class="ai-feature-item">
+                        <h4>🖼️ 超清双通道封面提取</h4>
+                        <p>自动从歌曲详情反查 300~3000px 专辑封面，支持酷我 500x500 与酷狗 400x400 双通道高清图。</p>
+                    </div>
+                    <div class="ai-feature-item">
+                        <h4>🛡️ 轻量沙箱零外部依赖</h4>
+                        <p>基于宿主原生注入对象（<code>http.get</code> / <code>crypto.base64Decode</code> / <code>console</code>），无 Node 外部依赖，车机零崩溃。</p>
                     </div>
                 </div>
-                <div>
-                    <div class="prompt-preview-box" id="ai-prompt-preview">请阅读并遵循 CarLyrics 歌词源开发规范：
-1. 实现标准的 search(title, artist, duration) 与 getLyrics(id) 两个核心函数；
-2. 使用宿主提供的同步 http.get(url, headers) 请求网络；
-3. 返回标准 LRC 格式字符串与封面图片；
 
-这是我的目标 API 抓包数据：
-[在此处粘贴你的 cURL 或 JSON 数据]
+                <!-- 渠道溯源命名约定表格 -->
+                <div style="margin: 24px 0 16px;">
+                    <h3 style="font-size: 1.05rem; font-weight: 700; color: #fff; margin-bottom: 8px;">
+                        📋 渠道智能溯源命名契合规范（契合 App 自动匹配机制）
+                    </h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">
+                        为确保在 App 偏好源选择「自动匹配」时精准对齐播放器，源元数据必须包含相应特征关键词：
+                    </p>
+                    <div class="ai-table-wrap">
+                        <table class="ai-match-table">
+                            <thead>
+                                <tr>
+                                    <th>目标播放平台</th>
+                                    <th>播放器包名识别特征</th>
+                                    <th>@id 必须包含 (小写)</th>
+                                    <th>@name 必须包含</th>
+                                    <th>推荐官方 ID 范例</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong style="color: #00d26a;">QQ 音乐系</strong></td>
+                                    <td><code>qqmusic</code>, <code>tencent</code>, <code>joox</code></td>
+                                    <td><code>qq</code> 或 <code>tencent</code></td>
+                                    <td><code>QQ</code> 或 <code>企鹅</code></td>
+                                    <td><code>qqmusic_official</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #ff2a4d;">网易云音乐系</strong></td>
+                                    <td><code>netease</code>, <code>cloudmusic</code>, <code>163</code></td>
+                                    <td><code>netease</code> 或 <code>163</code></td>
+                                    <td><code>网易</code></td>
+                                    <td><code>netease_official</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #00d2c4;">酷我音乐系</strong></td>
+                                    <td><code>kuwo</code>, <code>kwmusic</code></td>
+                                    <td><code>kuwo</code></td>
+                                    <td><code>酷我</code></td>
+                                    <td><code>kuwo_official</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #2979ff;">酷狗音乐系</strong></td>
+                                    <td><code>kugou</code></td>
+                                    <td><code>kugou</code></td>
+                                    <td><code>酷狗</code></td>
+                                    <td><code>kugou_official</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #00f59b;">汽水/抖音热歌系</strong></td>
+                                    <td><code>luna.music</code>, <code>qishui</code>, <code>aweme</code></td>
+                                    <td><code>qishui</code> 或 <code>luna</code></td>
+                                    <td><code>汽水</code> 或 <code>抖音</code></td>
+                                    <td><code>qishui_official</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #c084fc;">国际开源 / Spotify</strong></td>
+                                    <td><code>spotify</code>, <code>apple.android.music</code></td>
+                                    <td><code>lrclib</code> 或 <code>spotify</code></td>
+                                    <td><code>LRCLIB</code> 或 <code>Spotify</code></td>
+                                    <td><code>lrclib_public</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong style="color: #ffa726;">第三方聚合 / 备用兜底</strong></td>
+                                    <td>广播 / 蓝牙 / 通用播放器</td>
+                                    <td><code>gdstudio</code> 或 <code>proxy</code></td>
+                                    <td><code>聚合</code> 或 <code>GD</code></td>
+                                    <td><code>gdstudio_proxy</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-请为我生成完整的 .js 歌词源文件。</div>
+                <!-- AI Prompt 预览与一键复制 -->
+                <div style="margin-top: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-size: 0.92rem; font-weight: 700; color: #fff;">
+                            🤖 AI 自动写源专属 Prompt (复制后粘贴给 ChatGPT / Claude / DeepSeek)
+                        </span>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="nav-btn" style="background: var(--accent-purple); color: #fff;" onclick="copyAiPrompt()">
+                                📋 一键复制完整 AI 提示词
+                            </button>
+                            <a href="LYRICS_SOURCE_SPEC.md" target="_blank" class="action-btn">
+                                📖 歌词源开发手册 (SPEC)
+                            </a>
+                            <a href="https://github.com/lee1080/CarLyricsApp/tree/main/skills/lyrics-source-developer" target="_blank" class="action-btn">
+                                🛠️ Antigravity Skill 源码
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="prompt-preview-box" id="ai-prompt-preview">你是一个专为 CarLyricsApp 2.0+ 车载播放器编写外置歌词源插件的顶级逆向开发专家。
+请根据我提供的 API 接口信息或 cURL 命令，编写一个高可用、零外部依赖的 JavaScript 插件。
+
+【严格规范要求】：
+1. 头部必须声明元数据注释：
+   - @name 必须包含规范的平台名称（如 QQ、网易、酷我、酷狗、汽水、咪咕、Spotify）；
+   - @id 必须采用小写下划线且包含对应渠道识别关键字（如 qqmusic_xxx, netease_xxx, qishui_xxx）；
+   - 标注 @version, @author, @description。
+2. 必须实现 search(title, artist, duration) 和 getLyrics(id) 两个核心函数；
+3. 必须内置 cleanKeyword 过滤副标题与多余括号，提升曲名搜索命中率；
+4. 必须使用宿主提供的 http.get / http.post 同步 API；
+5. 若歌词接口返回 Base64 编码，必须使用 crypto.base64Decode 进行还原；
+6. 提取尽可能高清的专辑封面图片 URL（500x500 以上优先）；
+7. 全程使用 ES5 / 基础 ES6 语法，严禁引入外部 require / import / Promise / async-await，所有异步需在宿主内同步完成；
+8. 包含完善的 try...catch 防御性容错，任何网络异常均返回空数组或 null，严禁抛出未捕获异常。
+
+【标准代码骨架参考】：
+/**
+ * @name 平台名称
+ * @id channel_identifier
+ * @version 1.0.0
+ * @author Community
+ * @description 源描述信息
+ */
+function cleanKeyword(text) {
+    if (!text) return "";
+    return text.replace(/（.*?）/g, " ").replace(/\(.*?\)/g, " ").replace(/【.*?】/g, " ").replace(/\[.*?\]/g, " ").replace(/[-_—].*$/g, " ").trim();
+}
+function search(title, artist, duration) {
+    var kw = (cleanKeyword(title) + " " + (artist || "")).trim() || title;
+    var resp = http.get("https://api.example.com/search?keyword=" + encodeURIComponent(kw), { "User-Agent": "Mozilla/5.0" });
+    if (!resp) return [];
+    try {
+        var data = JSON.parse(resp);
+        // 返回格式: [{ id: "songId", title: "歌曲名", artist: "歌手", duration: 180 }]
+        return (data.songs || []).map(function(s) { return { id: String(s.id), title: s.name, artist: s.artist, duration: parseInt(s.duration || 0) }; });
+    } catch(e) { return []; }
+}
+function getLyrics(id) {
+    if (!id) return null;
+    var resp = http.get("https://api.example.com/lyric?id=" + encodeURIComponent(id), { "User-Agent": "Mozilla/5.0" });
+    if (!resp) return null;
+    try {
+        var data = JSON.parse(resp);
+        // 返回格式: { lrc: "[00:00.00]歌词文本", cover: "https://封面图URL" }
+        return { lrc: data.lyric || "", cover: data.picUrl || null };
+    } catch(e) { return null; }
+}
+
+【我提供的接口抓包或 cURL 信息】：
+[在此处粘贴你的 cURL 命令或接口 JSON 响应]</div>
                 </div>
             </div>
         </section>
@@ -2034,7 +2250,7 @@
   "version": "2.0.0",
   "description": "包含酷我官方、汽水音乐、网易云、QQ音乐、酷狗、LRCLIB 等精选歌词源插件",
   "author": "Community",
-  "updatedAt": "2026-10-22T11:52:53Z",
+  "updatedAt": "2026-10-22T12:34:53Z",
   "sources": [
     {
       "id": "qishui_official",
