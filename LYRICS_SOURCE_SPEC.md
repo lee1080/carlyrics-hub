@@ -25,11 +25,25 @@ CarLyrics 是一款高性能的车载音乐歌词挂件与浮窗渲染容器。
 
 | 元数据标签 | 必填 | 说明 | 示例 |
 | :--- | :---: | :--- | :--- |
-| `@name` | 是 | 歌词源的中文/展示名称 | `@name 酷我音乐` |
-| `@id` | 是 | 唯一英文标识符（不可重复） | `@id kuwo_official` |
+| `@name` | 是 | 歌词源的中文/展示名称（含平台关键词可触发渠道自动对齐） | `@name 酷我音乐` |
+| `@id` | 是 | 唯一英文标识符（包含平台关键词可触发渠道自动对齐） | `@id kuwo_official` |
 | `@version` | 是 | 语义化版本号 | `@version 1.0.0` |
 | `@author` | 否 | 开发者昵称或团队 | `@author Community` |
 | `@description`| 否 | 源的简要特性说明 | `@description 官方极速直连` |
+
+### 2.1 智能渠道溯源自动匹配命名规范 (v2.0.23+ 新增)
+
+当用户在 CarLyricsApp 偏好源选择「自动匹配」时，系统会读取当前正在播放的 Android 应用包名，并在已安装的歌词源插件中智能查找对应的专属源并置顶优先调用。
+
+为使编写的源能被系统精准识别，请确保源元数据满足以下对应规则：
+
+* **QQ 音乐系**（包名含 `qqmusic`, `tencent`）：`@id` 需包含 `qq` 或 `tencent`，`@name` 需包含 `QQ`；
+* **网易云音乐系**（包名含 `netease`, `cloudmusic`, `163`）：`@id` 需包含 `netease` 或 `163`，`@name` 需包含 `网易`；
+* **酷我音乐系**（包名含 `kuwo`, `kwmusic`）：`@id` 需包含 `kuwo`，`@name` 需包含 `酷我`；
+* **酷狗音乐系**（包名含 `kugou`）：`@id` 需包含 `kugou`，`@name` 需包含 `酷狗`；
+* **汽水音乐/抖音系**（包名含 `luna.music`, `qishui`, `aweme`）：`@id` 需包含 `qishui` 或 `luna`，`@name` 需包含 `汽水`；
+* **国际流媒体系**（包名含 `spotify`, `apple.android.music`, `youtube`）：`@id` 需包含 `lrclib` 或 `spotify`，`@name` 需包含 `LRCLIB` 或 `Spotify`；
+* **通用/聚合源**（未识别渠道或兜底）：`@id` 包含 `gdstudio` 或 `proxy`。
 
 ---
 
