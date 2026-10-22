@@ -1612,41 +1612,41 @@
             <div class="route-header">
                 <div class="route-title">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="m16 12-4-4-4 4M12 16V8"></path></svg>
-                    网络分发加速线路 (切换后链接即时更新)
+                    网络分发加速线路 (点击下方任意线路立即自动复制)
                 </div>
                 <div class="route-status-pill">
                     <span class="route-status-dot"></span>
-                    <span id="active-route-indicator">当前生效: 自建服务器 / 本地监听</span>
+                    <span id="active-route-indicator">当前生效: jsDelivr CDN (极速推荐)</span>
                 </div>
             </div>
             <div class="route-tabs">
-                <div class="route-tab active" id="tab-local" onclick="switchRoute('local')">
-                    <div class="route-tab-name">
-                        🏠 当前自建服务器
-                        <span class="route-tab-badge">本地/云端</span>
-                    </div>
-                    <div class="route-tab-desc">当前服务器端口监听直连，实时生效</div>
-                </div>
-                <div class="route-tab" id="tab-jsdelivr" onclick="switchRoute('jsdelivr')">
+                <div class="route-tab active" id="tab-jsdelivr" onclick="switchRoute('jsdelivr', true)">
                     <div class="route-tab-name">
                         🚀 jsDelivr CDN
                         <span class="route-tab-badge">推荐·极速</span>
                     </div>
-                    <div class="route-tab-desc">全球边缘高速缓存，车机免翻秒开</div>
+                    <div class="route-tab-desc">全球边缘高速缓存，点击自动复制</div>
                 </div>
-                <div class="route-tab" id="tab-ghproxy" onclick="switchRoute('ghproxy')">
+                <div class="route-tab" id="tab-local" onclick="switchRoute('local', true)">
+                    <div class="route-tab-name" id="tab-name-local">
+                        🌐 本站直链 (Pages)
+                        <span class="route-tab-badge" id="tab-badge-local">免代理直连</span>
+                    </div>
+                    <div class="route-tab-desc">当前站点托管直链，点击自动复制</div>
+                </div>
+                <div class="route-tab" id="tab-ghproxy" onclick="switchRoute('ghproxy', true)">
                     <div class="route-tab-name">
                         🇨🇳 ghproxy 镜像
                         <span class="route-tab-badge">国内免翻</span>
                     </div>
-                    <div class="route-tab-desc">国内高可用代理，车载 4G 流量友好</div>
+                    <div class="route-tab-desc">国内高可用代理，点击自动复制</div>
                 </div>
-                <div class="route-tab" id="tab-github" onclick="switchRoute('github')">
+                <div class="route-tab" id="tab-github" onclick="switchRoute('github', true)">
                     <div class="route-tab-name">
                         ⚡ GitHub Raw
                         <span class="route-tab-badge">官方原源</span>
                     </div>
-                    <div class="route-tab-desc">GitHub 官方 Raw 直链，原汁原味</div>
+                    <div class="route-tab-desc">GitHub 官方 Raw 直链，点击自动复制</div>
                 </div>
             </div>
             <div class="route-custom-input-wrap" id="custom-route-wrap">
@@ -2034,7 +2034,7 @@
   "version": "2.0.0",
   "description": "包含酷我官方、汽水音乐、网易云、QQ音乐、酷狗、LRCLIB 等精选歌词源插件",
   "author": "Community",
-  "updatedAt": "2026-10-22T10:52:08Z",
+  "updatedAt": "2026-10-22T11:28:11Z",
   "sources": [
     {
       "id": "qishui_official",
@@ -2104,30 +2104,19 @@
 
 
     const ROUTES = {
-        local: {
-            id: "local",
-            name: "当前自建/托管服务器",
-            badge: "本地/云端",
-            desc: "当前服务器端口监听或站点托管直连，实时生效",
-            getBase: () => {
-                if (window.location.protocol.startsWith("http")) {
-                    let path = window.location.pathname;
-                    if (path.endsWith("index.html")) {
-                        path = path.substring(0, path.lastIndexOf("/") + 1);
-                    } else if (!path.endsWith("/")) {
-                        path += "/";
-                    }
-                    return window.location.origin + path + "sources/";
-                }
-                return "http://localhost:8080/sources/";
-            }
-        },
         jsdelivr: {
             id: "jsdelivr",
             name: "jsDelivr CDN",
             badge: "推荐·极速",
             desc: "全球边缘高速缓存，车机免翻秒开",
             getBase: () => "https://cdn.jsdelivr.net/gh/lee1080/carlyrics-hub@main/sources/"
+        },
+        local: {
+            id: "local",
+            name: (typeof window !== "undefined" && window.location && window.location.hostname.endsWith("github.io")) ? "GitHub Pages 本站直链" : "本站直链 / 本地服务",
+            badge: "免代理直连",
+            desc: "当前托管站点直链，实时生效",
+            getBase: () => getSiteBasePath() + "sources/"
         },
         ghproxy: {
             id: "ghproxy",
@@ -2152,39 +2141,34 @@
         }
     };
 
-    let currentRoute = "local";
+    let currentRoute = "jsdelivr";
     let currentCustomBase = "";
     let activeCategory = "all";
     let currentModalFile = null;
     let currentQrUrl = "";
 
-    // 初始化线路检测
-    if (!window.location.protocol.startsWith("http")) {
-        currentRoute = "jsdelivr";
-    }
-
     function getCurrentBaseUrl() {
-        return ROUTES[currentRoute].getBase();
+        return (ROUTES[currentRoute] || ROUTES.jsdelivr).getBase();
     }
 
     function getCollectionUrl() {
-        const base = getCurrentBaseUrl();
-        if (currentRoute === "local" && window.location.protocol.startsWith("http")) {
-            return window.location.origin + "/index.json";
+        if (currentRoute === "local") {
+            return getSiteBasePath() + "index.json";
         }
+        const base = getCurrentBaseUrl();
         return base + "index.json";
     }
 
     function getSourceUrl(filename) {
-        const base = getCurrentBaseUrl();
-        if (currentRoute === "local" && window.location.protocol.startsWith("http")) {
-            return window.location.origin + "/" + filename;
+        if (currentRoute === "local") {
+            return getSiteBasePath() + "sources/" + filename;
         }
+        const base = getCurrentBaseUrl();
         return base + filename;
     }
 
-    // 切换线路
-    function switchRoute(routeId) {
+    // 切换线路并支持一键自动复制
+    function switchRoute(routeId, autoCopy = false) {
         currentRoute = routeId;
         document.querySelectorAll(".route-tab").forEach(t => t.classList.remove("active"));
         const activeTab = document.getElementById("tab-" + routeId);
@@ -2197,12 +2181,53 @@
             customWrap.style.display = "none";
         }
 
-        const routeObj = ROUTES[routeId];
-        document.getElementById("active-route-indicator").textContent = "当前生效: " + routeObj.name;
-        document.getElementById("collection-url-text").textContent = getCollectionUrl();
+        const routeObj = ROUTES[routeId] || ROUTES.jsdelivr;
+        const ind = document.getElementById("active-route-indicator");
+        if (ind) ind.textContent = "当前生效: " + routeObj.name;
+
+        const newUrl = getCollectionUrl();
+        const urlBox = document.getElementById("collection-url-text");
+        if (urlBox) urlBox.textContent = newUrl;
 
         renderSourcesGrid();
-        showToast("已切换至「" + routeObj.name + "」线路");
+
+        if (autoCopy) {
+            copyToClipboard(newUrl, `已切换至「${routeObj.name}」并自动复制订阅链接！`);
+            pulseTabCopied(activeTab);
+            pulseCopyButton();
+        }
+    }
+
+    function pulseTabCopied(tabEl) {
+        if (!tabEl) return;
+        const badge = tabEl.querySelector(".route-tab-badge");
+        if (badge) {
+            const oldText = badge.textContent;
+            badge.textContent = "✓ 已自动复制";
+            badge.style.background = "var(--accent-green)";
+            badge.style.color = "#000";
+            badge.style.fontWeight = "700";
+            setTimeout(() => {
+                badge.textContent = oldText;
+                badge.style.background = "";
+                badge.style.color = "";
+                badge.style.fontWeight = "";
+            }, 1800);
+        }
+    }
+
+    function pulseCopyButton() {
+        const btn = document.querySelector(".btn-copy-main");
+        if (!btn) return;
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg> 已复制到剪贴板！`;
+        btn.style.background = "var(--accent-green)";
+        btn.style.color = "#000";
+        setTimeout(() => {
+            btn.innerHTML = oldHtml;
+            btn.style.background = "";
+            btn.style.color = "";
+        }, 1800);
     }
 
     function applyCustomRoute() {
